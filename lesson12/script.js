@@ -5,16 +5,10 @@ const todoControl = document.querySelector('.todo-control'),
     todoList = document.querySelector('.todo-list'),
     todoCompleted = document.querySelector('.todo-completed');
 
-const todoData = [
-    {
-        value: 'Сварить кофе',
-        completed: false
-    },
-    {
-        value: 'Помыть посуду',
-        completed: true
-    }
-];
+    
+let todoData = [];
+
+
 
 const render = function(){
     todoList.textContent = '';
@@ -40,22 +34,45 @@ const render = function(){
 
             btnTodoComplete.addEventListener('click', function(){
                 item.completed = !item.completed;
+                localStorage.setItem('newarr', JSON.stringify(todoData));
                 render();
             });
 
+            const btnTodoRemove = li.querySelector('.todo-remove');
+
+            btnTodoRemove.addEventListener('click', function(){
+                todoData.splice(todoData.indexOf(item), 1);
+                localStorage.setItem('newarr', JSON.stringify(todoData));
+                render();
+            });
+            
         });
+    
 };
+
+    if (localStorage.getItem('newarr')) {
+    todoData = JSON.parse(localStorage.getItem('newarr'));
+                render();
+}
+
 
 todoControl.addEventListener('submit', function(event){
     event.preventDefault();
-
-    const newTodo = {
-        value: headerInput.value,
-        completed: false
-    };
+    if (headerInput.value === '') {
+        alert("Поле не должно быть пустым");
+    }   else {
+        const newTodo = {
+            value: headerInput.value,
+            completed: false
+        };
+        todoData.push(newTodo);
+        localStorage.newarr = JSON.stringify(todoData);
+        render();
+        headerInput.value = '';
+    }
     
-    todoData.push(newTodo);
-
-    render();
 });
+
+
+
 render();
